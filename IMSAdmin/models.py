@@ -2,6 +2,7 @@ from django.utils import timezone
 
 from django.db import models
 from django.db.models import QuerySet
+from django.contrib.auth.models import User
 
 '''
 The Soft Delete functionaly code has bee copied from : https://medium.com/@adriennedomingus/soft-deletion-in-django-e4882581c340
@@ -51,6 +52,85 @@ class SoftDeletionModel(models.Model):
         super(SoftDeletionModel, self).delete()
 
 
-class AdminProfile(SoftDeletionModel):
-    contact = models.CharField(max_length=20)
-    city = models.CharField(max_length=20, null= True)
+class InsuranceCompany(SoftDeletionModel):
+    name = models.CharField(max_length=50)
+    logo = models.ImageField()  # incomplete
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+class Customer(User):
+    mobile = models.CharField(max_length=50)
+    city = models.CharField(max_length=50)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+class VehicleMake(SoftDeletionModel):
+    name = models.CharField(max_length=50)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+class VehicleModel(SoftDeletionModel):
+    make = models.ForeignKey(VehicleMake, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    name = models.CharField(max_length=50)
+
+
+class VehicleValue(SoftDeletionModel):
+    make = models.ForeignKey(VehicleModel, on_delete=models.CASCADE)
+    value = models.FloatField()
+    year = models.IntegerField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+class PolicyComprehensive(SoftDeletionModel):
+    insuranceCompany = models.ForeignKey(InsuranceCompany, on_delete=models.CASCADE)
+    repairType = models.BooleanField()
+    minVehicle = models.FloatField()
+    maxVehicle = models.FloatField()
+    premium = models.FloatField()
+    minAmount = models.FloatField()
+    commission = models.FloatField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+class PolicyTP(SoftDeletionModel):
+    insuranceCompany = models.ForeignKey(InsuranceCompany, on_delete=models.CASCADE)
+    fixedValue = models.FloatField()
+    minVehicle = models.FloatField()
+    maxVehicle = models.FloatField()
+    commission = models.FloatField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+class CustomerPolicy(SoftDeletionModel):
+    class Meta:
+        abstract = True
+
+    insuranceCompany = models.ForeignKey(InsuranceCompany, on_delete=models.CASCADE)
+    model = models.ForeignKey(VehicleModel, on_delete=models.CASCADE)
+    effectiveFrom = models.DateField(auto_now=False, auto_now_add=False)
+    effectiveTill = models.DateField(auto_now=False, auto_now_add=False)
+    year = models.IntegerField()
+    value = models.FloatField()
+    totalAmount = models.FloatField()
+    commission = models.FloatField()
+    policyType = models.BooleanField()
+    name = models.CharField(max_length=50)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+class CustomerPolicyComprehensive(CustomerPolicy):
+    repairType = models.BooleanField()
+    premium = models.FloatField()
+
+
+class CustomerPolicyTP(CustomerPolicy):
+    fixedValue = models.FloatField()
