@@ -19,6 +19,8 @@ from django.conf.urls import include, url
 from django.contrib import admin
 
 urlpatterns = [
-   url('admin/', admin.site.urls),
-   url(r'^', include('helloworld.urls')), 
+   #url('admin/', admin.site.urls),
+   url(r'^', include('helloworld.urls')),
+   url(r'IMS/admin/',include('IMSAdmin.urls')),
+   url(r'IMS/customer/',include('IMSCustomer.urls'))
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
