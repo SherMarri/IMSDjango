@@ -3,4 +3,4 @@ from django.http import HttpResponse
 
 # Create your views here.
 def index(request):
-    return HttpResponse("Hello from the Customer app")
+    return render(request, 'IMSCustomer/index.html')

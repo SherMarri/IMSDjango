@@ -3,4 +3,4 @@ from django.http import HttpResponse
 
 # Create your views here.
 def index(request):
-    return HttpResponse('Hello from the Admin app')
+    return render(request,'IMSAdmin/index.html')
