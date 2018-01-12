@@ -54,7 +54,7 @@ class SoftDeletionModel(models.Model):
 
 class InsuranceCompany(SoftDeletionModel):
     name = models.CharField(max_length=50)
-    logo = models.ImageField()  # incomplete
+    logo = models.ImageField(upload_to='logos/')  # incomplete
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -122,7 +122,7 @@ class CustomerPolicy(SoftDeletionModel):
     totalAmount = models.FloatField()
     commission = models.FloatField()
     policyType = models.BooleanField()
-    name = models.CharField(max_length=50)
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
